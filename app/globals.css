@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --void: #04060a;
+  --midnight: #0a0d14;
+  --deep: #111827;
+  --glow: #a8ff5a;
+  --glow-dim: #6fcc2a;
+  --lunar: #f0ede8;
+  --mist: #8a8fa8;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  /* Prevent text size inflation on mobile */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--void);
+  color: var(--lunar);
+  font-family: 'DM Mono', monospace;
+  overflow-x: hidden;
+  /* Ensure full-height on mobile browsers */
+  min-height: 100svh;
+}
+
+/* Prevent images/SVGs from causing horizontal scroll */
+img, svg {
+  max-width: 100%;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--void); }
+::-webkit-scrollbar-thumb { background: var(--glow-dim); border-radius: 2px; }
+
+/* Grain overlay */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+/* Glow text utility */
+.glow-text {
+  color: var(--glow);
+  text-shadow: 0 0 20px rgba(168, 255, 90, 0.5), 0 0 60px rgba(168, 255, 90, 0.2);
+}
+
+.glow-border {
+  border: 1px solid rgba(168, 255, 90, 0.3);
+  box-shadow: 0 0 20px rgba(168, 255, 90, 0.1), inset 0 0 20px rgba(168, 255, 90, 0.05);
+}
+
+/* Section fade-in via intersection observer class */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Worm SVG decorative */
+.worm-bg {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.07;
+}
