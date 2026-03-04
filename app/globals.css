@@ -5,14 +5,15 @@
 @tailwind utilities;
 
 :root {
-  --cream: #f9f5ef;
-  --parchment: #f0ebe0;
-  --sand: #e5ddd0;
-  --forest: #2e5c3e;
-  --fern: #4a8c60;
-  --ink: #1a1612;
-  --stone: #6b5f52;
-  --border: rgba(26, 22, 18, 0.09);
+  --cloud: #f7f5fc;       /* main bg — barely-there lavender */
+  --mist: #eee9f8;        /* card bg */
+  --haze: #e2daf2;        /* deeper card / borders */
+  --navy: #1a2040;        /* primary brand — deep navy */
+  --indigo: #5b56b5;      /* accent purple */
+  --teal: #3db8b0;        /* teal accent */
+  --ink: #0f1023;         /* main text */
+  --stone: #6b6988;       /* muted text */
+  --border: rgba(15, 16, 35, 0.08);
 }
 
 * {
@@ -26,7 +27,7 @@ html {
 }
 
 body {
-  background-color: var(--cream);
+  background-color: var(--cloud);
   color: var(--ink);
   font-family: 'DM Mono', monospace;
   overflow-x: hidden;
@@ -37,12 +38,11 @@ img, svg {
   max-width: 100%;
 }
 
-/* Custom scrollbar */
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--parchment); }
-::-webkit-scrollbar-thumb { background: var(--fern); border-radius: 2px; }
+::-webkit-scrollbar-track { background: var(--mist); }
+::-webkit-scrollbar-thumb { background: var(--indigo); border-radius: 2px; }
 
-/* Subtle grain overlay */
+/* Grain overlay */
 body::before {
   content: '';
   position: fixed;
@@ -51,36 +51,23 @@ body::before {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
   pointer-events: none;
   z-index: 9999;
-  opacity: 0.25;
+  opacity: 0.2;
 }
 
-/* Utility classes */
-.accent-text {
-  color: var(--forest);
-}
-
+.accent-text  { color: var(--navy); }
 .accent-border {
-  border: 1px solid rgba(46, 92, 62, 0.3);
-  box-shadow: 0 0 0 1px rgba(46, 92, 62, 0.06);
+  border: 1px solid rgba(26, 32, 64, 0.2);
+  box-shadow: 0 0 0 1px rgba(26, 32, 64, 0.04);
 }
 
-/* Section reveal animation */
 .reveal {
   opacity: 0;
   transform: translateY(40px);
   transition: opacity 0.9s ease, transform 0.9s ease;
 }
+.reveal.visible { opacity: 1; transform: translateY(0); }
 
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.worm-bg {
-  position: absolute;
-  pointer-events: none;
-  opacity: 0.06;
-}
+.worm-bg { position: absolute; pointer-events: none; opacity: 0.06; }
 
 /* Marquee */
 @keyframes marquee {
@@ -92,24 +79,18 @@ body::before {
   width: max-content;
   animation: marquee 28s linear infinite;
 }
-.marquee-track:hover {
-  animation-play-state: paused;
-}
+.marquee-track:hover { animation-play-state: paused; }
 
-/* Sticky add-to-cart bar slide-in */
+/* Sticky add-to-cart bar */
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
 }
-.slide-up {
-  animation: slideUp 0.4s ease forwards;
-}
+.slide-up { animation: slideUp 0.4s ease forwards; }
 
-/* Popup fade */
+/* Popup */
 @keyframes popIn {
   0%   { opacity: 0; transform: scale(0.94) translateY(10px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
-.pop-in {
-  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-}
+.pop-in { animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }

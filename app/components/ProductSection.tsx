@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import Image from 'next/image'
 import { createCart, type ProductVariant } from '@/lib/shopify'
 
 interface Props {
@@ -8,11 +9,19 @@ interface Props {
   currencyCode: string
 }
 
+const productImages = [
+  { src: '/product-bag.jpg', alt: 'sWrms bag — front' },
+  { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle shot' },
+  { src: '/product-worm.jpg', alt: 'sWrms gummy worm close-up' },
+  { src: '/product-lineup.jpg', alt: 'sWrms product lineup' },
+]
+
 export default function ProductSection({ variants, price, currencyCode }: Props) {
   const [selectedVariant, setSelectedVariant] = useState(variants[0] || null)
   const [qty, setQty] = useState(1)
   const [loading, setLoading] = useState(false)
   const [added, setAdded] = useState(false)
+  const [activeImg, setActiveImg] = useState(0)
 
   const fmt = (amount: string) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode || 'USD' }).format(parseFloat(amount))
@@ -45,69 +54,97 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
   }
 
   return (
-    <section id="product" className="relative py-16 sm:py-24 lg:py-32 px-5 bg-parchment">
+    <section id="product" className="relative py-16 sm:py-24 lg:py-32 px-5 bg-mist">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-center">
-          {/* Visual */}
-          <div className="relative flex justify-center order-2 md:order-1">
-            <div className="relative w-full max-w-[320px] sm:max-w-md aspect-square flex items-center justify-center">
-              {/* Rings */}
-              <div className="absolute inset-0 rounded-full border border-forest/10" />
-              <div className="absolute inset-8 rounded-full border border-forest/15" />
-              <div className="absolute inset-16 rounded-full border border-forest/20" />
-              <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(46,92,62,0.06)_0%,transparent_70%)] rounded-full" />
-
-              <div className="relative z-10 text-center px-4">
-                <div className="font-display text-6xl sm:text-8xl italic text-forest mb-2">
-                  SW
-                </div>
-                <div className="font-body text-[10px] sm:text-xs tracking-[0.3em] text-forest/70 uppercase">SleepWorms™</div>
-                <div className="font-body text-[10px] sm:text-xs tracking-[0.2em] text-stone mt-1">60 gummy worms</div>
-
-                <div className="mt-4 accent-border bg-cream/70 px-4 sm:px-6 py-3 sm:py-4 rounded">
-                  <div className="font-body text-[10px] tracking-widest text-forest/60 uppercase mb-1">Each Worm</div>
-                  <div className="font-display text-xl sm:text-2xl text-ink">200mg</div>
-                  <div className="font-body text-[10px] text-stone">Magnesium Glycinate</div>
-                </div>
-              </div>
+        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
+          {/* Image gallery */}
+          <div className="order-2 md:order-1 space-y-3">
+            {/* Main image */}
+            <div className="aspect-square bg-cloud overflow-hidden relative">
+              <Image
+                src={productImages[activeImg].src}
+                alt={productImages[activeImg].alt}
+                fill
+                className="object-cover transition-opacity duration-300"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+            </div>
+            {/* Thumbnails */}
+            <div className="grid grid-cols-4 gap-2">
+              {productImages.map((img, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActiveImg(i)}
+                  className={`aspect-square overflow-hidden border-2 transition-all duration-200 ${
+                    activeImg === i ? 'border-navy' : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    width={120}
+                    height={120}
+                    className="w-full h-full object-cover"
+                  />
+                </button>
+              ))}
             </div>
           </div>
 
           {/* Details */}
           <div className="order-1 md:order-2">
-            <div className="font-body text-[10px] sm:text-xs tracking-[0.3em] text-forest uppercase mb-3">
-              One Product. One Purpose.
+            {/* Rating */}
+            <div className="flex items-center gap-2 mb-4">
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} viewBox="0 0 12 12" className="w-3 h-3 fill-indigo">
+                    <path d="M6 0l1.5 4h4l-3.3 2.4 1.3 4L6 8 2.5 10.4l1.3-4L0 4h4z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="font-body text-xs text-stone tracking-wider">4.9 · 1,247 reviews</span>
+            </div>
+
+            <div className="font-body text-[10px] sm:text-xs tracking-[0.3em] text-indigo uppercase mb-3">
+              sWrms. Magnesium Glycinate
             </div>
 
             <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-ink font-light leading-tight mb-4">
-              Magnesium Glycinate<br />
-              <span className="italic text-forest">Gummy Worms</span>
+              Gummy Worms<br />
+              <span className="italic text-navy">for Deep Sleep</span>
             </h2>
 
             <p className="font-body text-xs sm:text-sm text-stone leading-relaxed mb-6">
-              The highest-bioavailability form of magnesium. Chelated to glycine for deep muscle relaxation and nervous system calming. Your nightly ritual, now in worm form.
+              300mg magnesium glycinate per serving. Calming mixed berry flavor. 60 gummies. No melatonin, no morning grogginess — just the sleep your body has been asking for.
             </p>
 
             {/* Price */}
-            <div className="flex items-baseline gap-3 mb-6">
-              <span className="font-display text-3xl sm:text-4xl text-forest">{fmt(price)}</span>
-              <span className="font-body text-xs text-stone tracking-widest">/ 60 worms</span>
+            <div className="flex items-baseline gap-3 mb-1">
+              <span className="font-display text-3xl sm:text-4xl text-navy">{fmt(price)}</span>
+              <span className="font-body text-xs text-stone line-through">{fmt(String(parseFloat(price) * 1.25))}</span>
+              <span className="font-body text-[10px] bg-indigo/10 text-indigo px-2 py-0.5 tracking-wider">SAVE 20%</span>
+            </div>
+            <div className="font-body text-[10px] text-stone tracking-wider mb-6">
+              or {fmt(String(parseFloat(price) * 0.85))}/mo with{' '}
+              <span className="text-indigo">Subscribe & Save</span>
             </div>
 
             {/* Variants */}
             {variants.length > 1 && (
               <div className="mb-5">
-                <div className="font-body text-[10px] tracking-widest text-stone uppercase mb-2">Flavor</div>
+                <div className="font-body text-[10px] tracking-widest text-stone uppercase mb-2">
+                  Flavor: <span className="text-ink">{selectedVariant?.title}</span>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {variants.map((v) => (
                     <button
                       key={v.id}
                       onClick={() => setSelectedVariant(v)}
                       disabled={!v.availableForSale}
-                      className={`font-body text-[10px] sm:text-xs tracking-wider px-3 sm:px-4 py-2 border transition-all duration-200 ${
+                      className={`font-body text-[10px] sm:text-xs tracking-wider px-3 sm:px-4 py-2 border transition-all ${
                         selectedVariant?.id === v.id
-                          ? 'border-forest text-forest bg-forest/8'
-                          : 'border-ink/15 text-stone hover:border-forest/40'
+                          ? 'border-navy text-navy bg-navy/8'
+                          : 'border-ink/15 text-stone hover:border-navy/40'
                       } ${!v.availableForSale ? 'opacity-40 cursor-not-allowed' : ''}`}
                     >
                       {v.title}
@@ -117,26 +154,16 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
               </div>
             )}
 
-            {/* Quantity */}
+            {/* Qty */}
             <div className="mb-6">
               <div className="font-body text-[10px] tracking-widest text-stone uppercase mb-2">Quantity</div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center border border-ink/15">
-                  <button
-                    onClick={() => setQty(Math.max(1, qty - 1))}
-                    className="w-10 h-10 text-ink hover:text-forest transition-colors font-body text-lg"
-                  >−</button>
-                  <span className="w-10 text-center font-body text-sm text-ink">{qty}</span>
-                  <button
-                    onClick={() => setQty(qty + 1)}
-                    className="w-10 h-10 text-ink hover:text-forest transition-colors font-body text-lg"
-                  >+</button>
+                  <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 text-ink hover:text-navy transition-colors text-lg">−</button>
+                  <span className="w-10 text-center font-body text-sm">{qty}</span>
+                  <button onClick={() => setQty(qty + 1)} className="w-10 h-10 text-ink hover:text-navy transition-colors text-lg">+</button>
                 </div>
-                {qty > 1 && (
-                  <span className="font-body text-xs text-stone tracking-wider">
-                    {fmt(String(parseFloat(price) * qty))} total
-                  </span>
-                )}
+                {qty > 1 && <span className="font-body text-xs text-stone">{fmt(String(parseFloat(price) * qty))} total</span>}
               </div>
             </div>
 
@@ -145,14 +172,14 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
               <button
                 onClick={handleCheckout}
                 disabled={loading || !selectedVariant?.availableForSale}
-                className="w-full bg-forest text-cream font-body text-xs sm:text-sm tracking-[0.2em] uppercase py-4 hover:bg-fern transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed min-h-[52px] shadow-sm hover:shadow-md"
+                className="w-full bg-navy text-cloud font-body text-xs sm:text-sm tracking-[0.2em] uppercase py-4 hover:bg-indigo transition-all duration-300 disabled:opacity-50 min-h-[52px] shadow-sm hover:shadow-md"
               >
                 {loading ? 'Loading...' : 'Buy Now — Checkout'}
               </button>
               <button
                 onClick={handleAddToCart}
                 disabled={loading || !selectedVariant?.availableForSale}
-                className="w-full accent-border text-forest font-body text-xs sm:text-sm tracking-[0.2em] uppercase py-4 hover:bg-forest/5 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed min-h-[52px]"
+                className="w-full border border-navy/30 text-navy font-body text-xs sm:text-sm tracking-[0.2em] uppercase py-4 hover:bg-navy/5 transition-all duration-300 disabled:opacity-50 min-h-[52px]"
               >
                 {added ? '✓ Added to Cart' : 'Add to Cart'}
               </button>
@@ -166,7 +193,7 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
                 { label: 'Lab Tested', sub: '3rd party' },
               ].map((t) => (
                 <div key={t.label}>
-                  <div className="font-body text-[9px] sm:text-[10px] tracking-wider text-forest uppercase leading-tight">{t.label}</div>
+                  <div className="font-body text-[9px] sm:text-[10px] tracking-wider text-navy uppercase leading-tight">{t.label}</div>
                   <div className="font-body text-[9px] text-stone mt-0.5">{t.sub}</div>
                 </div>
               ))}

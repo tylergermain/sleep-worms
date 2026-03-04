@@ -26,20 +26,19 @@ export default function Nav() {
   return (
     <nav className={`fixed top-9 left-0 right-0 z-50 transition-all duration-500 ${
       scrolled || open
-        ? 'bg-cream/95 backdrop-blur-md border-b border-ink/8'
+        ? 'bg-cloud/95 backdrop-blur-md border-b border-ink/8'
         : 'bg-transparent'
     }`}>
       <div className="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="font-display text-lg tracking-widest text-ink shrink-0">
-          SLEEP<span className="text-forest">WORMS</span>
-          <span className="font-display text-xs text-stone align-top ml-0.5">™</span>
+        <a href="#" className="font-display text-xl tracking-wide text-navy shrink-0 leading-none">
+          <span className="italic">s</span>Wrms<span className="text-indigo">.</span>
         </a>
 
         {/* Desktop links */}
         <div className="hidden md:flex items-center gap-8 font-body text-xs tracking-widest text-stone uppercase">
           {links.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-forest transition-colors">
+            <a key={l.href} href={l.href} className="hover:text-navy transition-colors">
               {l.label}
             </a>
           ))}
@@ -48,19 +47,19 @@ export default function Nav() {
         {/* Desktop CTA */}
         <a
           href="#product"
-          className="hidden md:block accent-border text-forest font-body text-xs tracking-widest uppercase px-4 py-2 hover:bg-forest hover:text-cream transition-all duration-300"
+          className="hidden md:block border border-navy/30 text-navy font-body text-xs tracking-widest uppercase px-4 py-2 hover:bg-navy hover:text-cloud transition-all duration-300"
         >
-          Get Worms
+          Shop Now
         </a>
 
-        {/* Mobile: CTA + Hamburger */}
+        {/* Mobile */}
         <div className="flex md:hidden items-center gap-3">
           <a
             href="#product"
             onClick={() => setOpen(false)}
-            className="accent-border text-forest font-body text-[10px] tracking-widest uppercase px-3 py-1.5 hover:bg-forest hover:text-cream transition-all duration-300"
+            className="border border-navy/30 text-navy font-body text-[10px] tracking-widest uppercase px-3 py-1.5 hover:bg-navy hover:text-cloud transition-all duration-300"
           >
-            Get Worms
+            Shop Now
           </a>
           <button
             onClick={() => setOpen(!open)}
@@ -76,13 +75,13 @@ export default function Nav() {
 
       {/* Mobile dropdown */}
       <div className={`md:hidden overflow-hidden transition-all duration-500 ${open ? 'max-h-64' : 'max-h-0'}`}>
-        <div className="px-5 pb-6 flex flex-col border-t border-ink/8">
+        <div className="px-5 pb-6 flex flex-col border-t border-ink/8 bg-cloud/95">
           {links.map((l, i) => (
             <a
               key={l.href}
               href={l.href}
               onClick={() => setOpen(false)}
-              className="font-body text-sm tracking-[0.2em] text-stone uppercase py-4 border-b border-ink/5 hover:text-forest transition-colors"
+              className="font-body text-sm tracking-[0.2em] text-stone uppercase py-4 border-b border-ink/5 hover:text-navy transition-colors"
               style={{ transitionDelay: open ? `${i * 50}ms` : '0ms' }}
             >
               {l.label}

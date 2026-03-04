@@ -1,61 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-
-function WormSVG({ className = '', style = {} }: { className?: string; style?: React.CSSProperties }) {
-  return (
-    <svg viewBox="0 0 400 120" className={className} style={style} xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <radialGradient id="wormGrad" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="#4a8c60" stopOpacity="0.95" />
-          <stop offset="50%" stopColor="#2e5c3e" stopOpacity="0.85" />
-          <stop offset="100%" stopColor="#1d3d28" stopOpacity="0.7" />
-        </radialGradient>
-        <radialGradient id="wormGradHead" cx="40%" cy="40%" r="60%">
-          <stop offset="0%" stopColor="#5da370" stopOpacity="1" />
-          <stop offset="100%" stopColor="#2e5c3e" stopOpacity="1" />
-        </radialGradient>
-        <filter id="wormShadow">
-          <feDropShadow dx="0" dy="3" stdDeviation="4" floodColor="#1d3d28" floodOpacity="0.25" />
-        </filter>
-      </defs>
-      {[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14].map((i) => (
-        <ellipse
-          key={i}
-          cx={20 + i * 26}
-          cy={60 + Math.sin(i * 0.8) * 18}
-          rx={16}
-          ry={13}
-          fill="url(#wormGrad)"
-          filter="url(#wormShadow)"
-          opacity={0.9 - i * 0.01}
-        />
-      ))}
-      {/* Segment lines */}
-      {[1,2,3,4,5,6,7,8,9,10,11,12,13,14].map((i) => (
-        <ellipse
-          key={`line-${i}`}
-          cx={20 + i * 26 - 13}
-          cy={60 + Math.sin(i * 0.8) * 18}
-          rx={1.5}
-          ry={9}
-          fill="#1d3d28"
-          opacity={0.2}
-        />
-      ))}
-      {/* Head */}
-      <ellipse cx={16} cy={60} rx={18} ry={16} fill="url(#wormGradHead)" filter="url(#wormShadow)" />
-      {/* Eyes */}
-      <circle cx={10} cy={54} r={3.5} fill="#f9f5ef" />
-      <circle cx={22} cy={54} r={3.5} fill="#f9f5ef" />
-      <circle cx={10} cy={55} r={2} fill="#1a1612" />
-      <circle cx={22} cy={55} r={2} fill="#1a1612" />
-      <circle cx={9} cy={54} r={0.8} fill="#ffffff" opacity={0.8} />
-      <circle cx={21} cy={54} r={0.8} fill="#ffffff" opacity={0.8} />
-      {/* Smile */}
-      <path d="M 10 63 Q 13 67 18 63" stroke="#1d3d28" strokeWidth="1.5" fill="none" opacity={0.5} strokeLinecap="round" />
-    </svg>
-  )
-}
+import Image from 'next/image'
 
 export default function Hero() {
   const heroRef = useRef<HTMLDivElement>(null)
@@ -66,8 +11,8 @@ export default function Hero() {
     const isTouchDevice = window.matchMedia('(pointer: coarse)').matches
     if (isTouchDevice) return
     const onMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth - 0.5) * 20
-      const y = (e.clientY / window.innerHeight - 0.5) * 12
+      const x = (e.clientX / window.innerWidth - 0.5) * 15
+      const y = (e.clientY / window.innerHeight - 0.5) * 10
       el.style.setProperty('--mx', `${x}px`)
       el.style.setProperty('--my', `${y}px`)
     }
@@ -78,79 +23,91 @@ export default function Hero() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden bg-cream"
+      className="relative min-h-[100svh] flex flex-col items-center justify-center overflow-hidden bg-cloud"
       style={{ '--mx': '0px', '--my': '0px' } as React.CSSProperties}
     >
-      {/* Warm radial wash */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_60%_at_50%_55%,rgba(46,92,62,0.05)_0%,transparent_70%)]" />
-      {/* Subtle dot grid */}
-      <div className="absolute inset-0" style={{
-        backgroundImage: `radial-gradient(circle, rgba(26,22,18,0.15) 1px, transparent 1px)`,
-        backgroundSize: '60px 60px',
-        opacity: 0.4,
-      }} />
-
-      {/* Decorative worms — desktop only */}
-      <WormSVG
-        className="worm-bg w-[400px] animate-float hidden md:block"
-        style={{ top: '18%', left: '-4%', transform: 'rotate(-18deg)', opacity: 0.07 }}
-      />
-      <WormSVG
-        className="worm-bg w-[350px] animate-float-slow hidden md:block"
-        style={{ bottom: '14%', right: '-4%', transform: 'rotate(165deg)', opacity: 0.06, animationDelay: '3s' }}
-      />
+      {/* Dreamy background gradients */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_60%_at_30%_20%,rgba(91,86,181,0.12)_0%,transparent_60%)]" />
+        <div className="absolute top-0 right-0 w-full h-full bg-[radial-gradient(ellipse_60%_50%_at_80%_70%,rgba(61,184,176,0.08)_0%,transparent_60%)]" />
+      </div>
 
       {/* Main content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto px-5 pt-28 sm:pt-32">
-        {/* Eyebrow */}
-        <div className="inline-flex items-center gap-2 mb-6 font-body text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] text-forest uppercase">
-          <div className="w-5 sm:w-8 h-px bg-forest opacity-50 shrink-0" />
-          <span className="whitespace-nowrap">Magnesium Glycinate · Gummy Worms</span>
-          <div className="w-5 sm:w-8 h-px bg-forest opacity-50 shrink-0" />
-        </div>
+      <div className="relative z-10 w-full max-w-6xl mx-auto px-5 pt-28 sm:pt-32">
+        <div className="grid md:grid-cols-2 gap-8 lg:gap-16 items-center min-h-[calc(100svh-8rem)]">
+          {/* Left — copy */}
+          <div className="flex flex-col justify-center text-center md:text-left">
+            {/* Logo wordmark */}
+            <div className="font-display text-4xl sm:text-5xl tracking-wide text-navy mb-6 leading-none">
+              <span className="italic">s</span>Wrms<span className="text-indigo">.</span>
+            </div>
 
-        {/* Headline */}
-        <h1 className="font-display font-light leading-none mb-6">
-          <span className="block text-[clamp(2.8rem,12vw,9rem)] text-ink tracking-tight">
-            The Worm
-          </span>
-          <span className="block text-[clamp(2.8rem,12vw,9rem)] italic text-forest tracking-tight">
-            that puts
-          </span>
-          <span className="block text-[clamp(2.8rem,12vw,9rem)] text-ink tracking-tight">
-            you down.
-          </span>
-        </h1>
+            {/* Eyebrow */}
+            <div className="inline-flex items-center gap-2 mb-5 font-body text-[10px] sm:text-xs tracking-[0.25em] text-indigo uppercase">
+              <div className="w-6 h-px bg-indigo/50 shrink-0 hidden md:block" />
+              Magnesium Glycinate · Gummy Worms · Sleep Support
+            </div>
 
-        {/* Sub */}
-        <p className="font-body text-xs sm:text-sm text-stone max-w-sm sm:max-w-lg mx-auto mb-8 sm:mb-12 leading-relaxed tracking-wide px-2">
-          400mg magnesium glycinate per serving.
-          <br className="hidden sm:block" />
-          {' '}No melatonin. No morning fog. Just deep, biological sleep.
-        </p>
+            {/* Headline */}
+            <h1 className="font-display font-light leading-none mb-5">
+              <span className="block text-[clamp(2.6rem,9vw,7rem)] text-ink tracking-tight">
+                Sleep like
+              </span>
+              <span className="block text-[clamp(2.6rem,9vw,7rem)] italic text-navy tracking-tight">
+                you used to.
+              </span>
+            </h1>
 
-        {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="#product"
-            className="w-full sm:w-auto bg-forest text-cream font-body text-xs sm:text-sm tracking-[0.2em] uppercase px-8 sm:px-10 py-3.5 sm:py-4 hover:bg-fern transition-all duration-300 shadow-sm hover:shadow-md"
-          >
-            Shop SleepWorms
-          </a>
-          <a
-            href="#science"
-            className="w-full sm:w-auto font-body text-xs sm:text-sm tracking-[0.2em] text-stone uppercase border border-ink/15 px-8 sm:px-10 py-3.5 sm:py-4 hover:border-forest hover:text-forest transition-all duration-300 text-center"
-          >
-            The Science
-          </a>
-        </div>
+            <p className="font-body text-xs sm:text-sm text-stone max-w-sm mx-auto md:mx-0 mb-8 leading-relaxed">
+              300mg magnesium glycinate per serving. Calming mixed berry flavor. No melatonin, no morning fog — just the deep, restorative sleep your body craves.
+            </p>
 
-        {/* Floating worm visual */}
-        <div className="mt-10 sm:mt-16 relative flex justify-center">
-          <div className="relative animate-float w-full max-w-[260px] sm:max-w-[400px]" style={{ animationDuration: '5s' }}>
-            <WormSVG style={{ width: '100%', filter: 'drop-shadow(0 8px 24px rgba(46,92,62,0.2))' }} />
-            {/* Ground shadow */}
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-32 sm:w-48 h-3 bg-forest/10 blur-xl rounded-full" />
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center md:items-start gap-3">
+              <a
+                href="#product"
+                className="w-full sm:w-auto bg-navy text-cloud font-body text-xs sm:text-sm tracking-[0.2em] uppercase px-8 sm:px-10 py-3.5 sm:py-4 hover:bg-indigo transition-all duration-300 shadow-sm hover:shadow-md text-center"
+              >
+                Shop sWrms
+              </a>
+              <a
+                href="#science"
+                className="w-full sm:w-auto font-body text-xs sm:text-sm tracking-[0.2em] text-stone uppercase border border-ink/15 px-8 sm:px-10 py-3.5 sm:py-4 hover:border-navy hover:text-navy transition-all duration-300 text-center"
+              >
+                The Science
+              </a>
+            </div>
+
+            {/* Social proof */}
+            <div className="flex items-center gap-3 mt-8 justify-center md:justify-start">
+              <div className="flex gap-0.5">
+                {[...Array(5)].map((_, i) => (
+                  <svg key={i} viewBox="0 0 12 12" className="w-3 h-3 fill-indigo">
+                    <path d="M6 0l1.5 4h4l-3.3 2.4 1.3 4L6 8 2.5 10.4l1.3-4L0 4h4z" />
+                  </svg>
+                ))}
+              </div>
+              <span className="font-body text-xs text-stone tracking-wider">4.9 · 1,247 happy sleepers</span>
+            </div>
+          </div>
+
+          {/* Right — product image */}
+          <div className="relative flex items-center justify-center md:justify-end order-first md:order-last">
+            {/* Dreamy glow behind product */}
+            <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(91,86,181,0.15)_0%,rgba(61,184,176,0.08)_50%,transparent_70%)] rounded-full scale-110" />
+
+            <div className="relative animate-float w-full max-w-[280px] sm:max-w-[380px] md:max-w-[440px]" style={{ animationDuration: '5s' }}>
+              <Image
+                src="/product-bag.jpg"
+                alt="sWrms Magnesium Glycinate Gummy Worms"
+                width={440}
+                height={520}
+                className="w-full h-auto object-contain drop-shadow-2xl"
+                priority
+              />
+              {/* Shadow beneath */}
+              <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-3/4 h-6 bg-navy/15 blur-2xl rounded-full" />
+            </div>
           </div>
         </div>
       </div>
