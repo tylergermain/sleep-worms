@@ -81,3 +81,35 @@ body::before {
   pointer-events: none;
   opacity: 0.06;
 }
+
+/* Marquee */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 28s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Sticky add-to-cart bar slide-in */
+@keyframes slideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.slide-up {
+  animation: slideUp 0.4s ease forwards;
+}
+
+/* Popup fade */
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.94) translateY(10px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.pop-in {
+  animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}

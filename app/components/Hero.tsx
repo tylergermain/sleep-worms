@@ -101,7 +101,7 @@ export default function Hero() {
       />
 
       {/* Main content */}
-      <div className="relative z-10 text-center max-w-5xl mx-auto px-5 pt-20">
+      <div className="relative z-10 text-center max-w-5xl mx-auto px-5 pt-28 sm:pt-32">
         {/* Eyebrow */}
         <div className="inline-flex items-center gap-2 mb-6 font-body text-[10px] sm:text-xs tracking-[0.2em] sm:tracking-[0.3em] text-forest uppercase">
           <div className="w-5 sm:w-8 h-px bg-forest opacity-50 shrink-0" />
