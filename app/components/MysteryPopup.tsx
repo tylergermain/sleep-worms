@@ -1,32 +1,46 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
 
 const DISCOUNT_CODE = 'WRMS15'
-const STORAGE_KEY = 'wrms_popup_dismissed'
+const STORAGE_KEY = 'wrms_quiz_done'
 
-type Phase = 'hidden' | 'teaser' | 'revealed'
+const questions = [
+  {
+    q: "What's your biggest sleep struggle?",
+    opts: ['Falling asleep', 'Staying asleep', 'Waking up groggy', "Can't relax at night"],
+  },
+  {
+    q: 'How long have you dealt with this?',
+    opts: ['Just started', '1–6 months', '6 months – 1 year', 'Years'],
+  },
+  {
+    q: 'Have you tried magnesium before?',
+    opts: ['No, first time', "Yes — didn't work", 'Yes — it helped a bit', 'Tried pills, hated them'],
+  },
+]
+
+type Phase = 'hidden' | 'quiz' | 'result'
 
 export default function MysteryPopup() {
   const [phase, setPhase] = useState<Phase>('hidden')
-  const [email, setEmail] = useState('')
-  const [submitting, setSubmitting] = useState(false)
+  const [step, setStep] = useState(0)
+  const [answers, setAnswers] = useState<string[]>([])
   const [copied, setCopied] = useState(false)
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (sessionStorage.getItem(STORAGE_KEY)) return
-    timerRef.current = setTimeout(() => setPhase('teaser'), 6000)
-    const onMouseLeave = (e: MouseEvent) => {
+    timerRef.current = setTimeout(() => setPhase('quiz'), 7000)
+    const onLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && phase === 'hidden' && !sessionStorage.getItem(STORAGE_KEY)) {
         if (timerRef.current) clearTimeout(timerRef.current)
-        setPhase('teaser')
+        setPhase('quiz')
       }
     }
-    document.addEventListener('mouseleave', onMouseLeave)
+    document.addEventListener('mouseleave', onLeave)
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current)
-      document.removeEventListener('mouseleave', onMouseLeave)
+      document.removeEventListener('mouseleave', onLeave)
     }
   }, [phase])
 
@@ -40,13 +54,15 @@ export default function MysteryPopup() {
     sessionStorage.setItem(STORAGE_KEY, '1')
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-    setSubmitting(true)
-    await new Promise((r) => setTimeout(r, 800))
-    setSubmitting(false)
-    setPhase('revealed')
+  const selectAnswer = (ans: string) => {
+    const next = [...answers, ans]
+    setAnswers(next)
+    if (step < questions.length - 1) {
+      setStep(step + 1)
+    } else {
+      setPhase('result')
+      sessionStorage.setItem(STORAGE_KEY, '1')
+    }
   }
 
   const copyCode = () => {
@@ -58,92 +74,90 @@ export default function MysteryPopup() {
 
   if (phase === 'hidden') return null
 
+  const progress = phase === 'quiz' ? ((step) / questions.length) * 100 : 100
+  const current = questions[step]
+
   return (
     <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4">
       <div className="absolute inset-0 bg-ink/50 backdrop-blur-sm" onClick={dismiss} />
 
-      <div className="pop-in relative w-full sm:max-w-md bg-cloud sm:rounded overflow-hidden shadow-2xl">
-        {/* Header */}
-        <div className="relative overflow-hidden">
-          {/* Product image bg */}
-          <div className="absolute inset-0">
-            <Image src="/product-lineup.jpg" alt="" fill className="object-cover opacity-40" sizes="448px" />
-            <div className="absolute inset-0 bg-navy/70" />
-          </div>
-
-          <div className="relative z-10 px-6 sm:px-8 py-6 sm:py-8 text-center">
-            <button onClick={dismiss} className="absolute right-4 top-4 text-cloud/60 hover:text-cloud text-2xl leading-none transition-colors">×</button>
-
-            {phase === 'teaser' ? (
-              <>
-                <div className="font-body text-[10px] tracking-[0.3em] text-teal uppercase mb-2">Wait — before you go</div>
-                <div className="font-display text-3xl sm:text-4xl text-cloud italic font-light leading-tight">
-                  A mystery offer<br />is waiting for you
-                </div>
-                <div className="mt-3 flex justify-center gap-1.5">
-                  {[...Array(3)].map((_, i) => (
-                    <div key={i} className="w-2 h-2 rounded-full bg-cloud/30 animate-pulse" style={{ animationDelay: `${i * 0.3}s` }} />
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="font-body text-[10px] tracking-[0.3em] text-teal uppercase mb-2">Your offer is revealed</div>
-                <div className="font-display text-5xl sm:text-6xl text-cloud font-light">15% Off</div>
-                <div className="font-body text-xs text-cloud/60 mt-1 tracking-wider">your first order</div>
-              </>
-            )}
-          </div>
+      <div className="pop-in relative w-full sm:max-w-lg bg-cloud sm:rounded overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto">
+        {/* Progress bar */}
+        <div className="h-1 bg-haze">
+          <div
+            className="h-full bg-indigo transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
         </div>
 
-        {/* Body */}
-        <div className="px-6 sm:px-8 py-6 sm:py-8">
-          {phase === 'teaser' ? (
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-ink/8">
+          {phase === 'quiz' ? (
+            <div>
+              <div className="label text-indigo">Sleep Quiz</div>
+              <div className="text-xs text-stone mt-0.5">Question {step + 1} of {questions.length}</div>
+            </div>
+          ) : (
+            <div className="label text-indigo">Your Results</div>
+          )}
+          <button onClick={dismiss} className="text-stone hover:text-ink text-xl leading-none transition-colors">×</button>
+        </div>
+
+        <div className="p-6 sm:p-8">
+          {phase === 'quiz' ? (
             <>
-              <p className="font-body text-xs text-stone text-center leading-relaxed mb-6">
-                Enter your email to unlock an exclusive offer. Could be 10%. Could be more. Only one way to find out.
-              </p>
-              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-                <input
-                  type="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  className="w-full border border-ink/15 bg-cloud font-body text-xs text-ink px-4 py-3 focus:outline-none focus:border-navy placeholder:text-stone/40 tracking-wider"
-                />
-                <button
-                  type="submit"
-                  disabled={submitting}
-                  className="w-full bg-navy text-cloud font-body text-xs tracking-[0.2em] uppercase py-3.5 hover:bg-indigo transition-all duration-300 disabled:opacity-60 min-h-[48px]"
-                >
-                  {submitting ? 'Unlocking...' : 'Reveal My Offer →'}
-                </button>
-              </form>
-              <p className="font-body text-[9px] text-stone/50 text-center mt-4 tracking-wider">No spam. Unsubscribe anytime.</p>
+              <h3 className="text-xl font-bold text-ink mb-5" style={{ letterSpacing: '-0.01em' }}>
+                {current.q}
+              </h3>
+              <div className="space-y-2.5">
+                {current.opts.map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => selectAnswer(opt)}
+                    className="w-full text-left p-4 border border-ink/12 hover:border-navy hover:bg-mist transition-all duration-150 text-sm font-medium text-ink group flex items-center justify-between"
+                  >
+                    {opt}
+                    <span className="text-stone/40 group-hover:text-navy transition-colors text-lg">→</span>
+                  </button>
+                ))}
+              </div>
             </>
           ) : (
             <>
-              <p className="font-body text-xs text-stone text-center leading-relaxed mb-6">
-                Use this code at checkout. Valid for 48 hours — don&apos;t sleep on it. (Well, do sleep. That&apos;s the whole point.)
-              </p>
-              <button
-                onClick={copyCode}
-                className="w-full flex items-center justify-between border-2 border-dashed border-navy/30 bg-mist px-5 py-4 hover:bg-haze transition-colors group"
-              >
-                <span className="font-body text-lg sm:text-xl tracking-[0.3em] text-navy font-medium">{DISCOUNT_CODE}</span>
-                <span className="font-body text-[10px] tracking-widest text-navy/50 uppercase group-hover:text-navy transition-colors">
-                  {copied ? '✓ Copied!' : 'Tap to copy'}
-                </span>
-              </button>
-              <a
-                href="#product"
-                onClick={dismiss}
-                className="mt-3 block w-full bg-navy text-cloud font-body text-xs tracking-[0.2em] uppercase py-3.5 text-center hover:bg-indigo transition-all duration-300 min-h-[48px] leading-[3rem]"
-              >
-                Shop Now
+              {/* Result */}
+              <div className="text-center mb-6">
+                <div className="text-4xl mb-3">🎉</div>
+                <h3 className="text-xl font-bold text-ink mb-2" style={{ letterSpacing: '-0.01em' }}>
+                  sWrms is your match
+                </h3>
+                <p className="text-sm text-stone leading-relaxed">
+                  Based on your answers, magnesium glycinate is exactly what your sleep needs.
+                  No melatonin. No dependency. Just better sleep — starting tonight.
+                </p>
+              </div>
+
+              {/* Offer */}
+              <div className="bg-mist p-5 mb-5">
+                <div className="label text-indigo mb-3">Your exclusive offer</div>
+                <div className="text-3xl font-bold text-navy mb-1" style={{ letterSpacing: '-0.03em' }}>15% Off</div>
+                <div className="text-sm text-stone mb-4">your first order · valid 48 hours</div>
+
+                <button
+                  onClick={copyCode}
+                  className="w-full flex items-center justify-between border-2 border-dashed border-navy/30 px-5 py-3 hover:bg-haze transition-colors group"
+                >
+                  <span className="text-xl font-bold tracking-widest text-navy">{DISCOUNT_CODE}</span>
+                  <span className="label text-navy/50 group-hover:text-navy transition-colors">
+                    {copied ? '✓ COPIED' : 'TAP TO COPY'}
+                  </span>
+                </button>
+              </div>
+
+              <a href="#product" onClick={dismiss}
+                className="btn w-full bg-navy text-cloud py-4 hover:bg-indigo transition-colors block text-center">
+                Shop sWrms Now →
               </a>
-              <p className="font-body text-[9px] text-stone/50 text-center mt-4 tracking-wider">Expires in 48 hours · One use per customer</p>
+              <p className="text-xs text-stone/50 text-center mt-3">One use per customer · Expires in 48 hours</p>
             </>
           )}
         </div>

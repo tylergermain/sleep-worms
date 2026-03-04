@@ -5,8 +5,11 @@ import MysteryPopup from './components/MysteryPopup'
 import StickyCart from './components/StickyCart'
 import Hero from './components/Hero'
 import ProductSection from './components/ProductSection'
+import Directions from './components/Directions'
 import Benefits from './components/Benefits'
 import Science from './components/Science'
+import BackedByExperts from './components/BackedByExperts'
+import ComparisonTable from './components/ComparisonTable'
 import Ritual from './components/Ritual'
 import Reviews from './components/Reviews'
 import Footer from './components/Footer'
@@ -31,8 +34,11 @@ export default async function Home() {
       <MysteryPopup />
       <Hero />
       <ProductSection variants={variants} price={price} currencyCode={currencyCode} />
+      <Directions />
       <Benefits />
       <Science />
+      <BackedByExperts />
+      <ComparisonTable />
       <Ritual />
       <Reviews />
       <Footer />

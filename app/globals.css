@@ -1,19 +1,30 @@
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --cloud: #f7f5fc;       /* main bg — barely-there lavender */
-  --mist: #eee9f8;        /* card bg */
-  --haze: #e2daf2;        /* deeper card / borders */
-  --navy: #1a2040;        /* primary brand — deep navy */
-  --indigo: #5b56b5;      /* accent purple */
-  --teal: #3db8b0;        /* teal accent */
-  --ink: #0f1023;         /* main text */
-  --stone: #6b6988;       /* muted text */
+  --cloud: #f7f5fc;
+  --mist: #eee9f8;
+  --haze: #e2daf2;
+  --navy: #1a2040;
+  --indigo: #5b56b5;
+  --teal: #3db8b0;
+  --ink: #0f1023;
+  --stone: #6b6988;
   --border: rgba(15, 16, 35, 0.08);
+
+  /* Comfrt-style type scale */
+  --base: 16px;
+  --ratio: 1.25;
+  --size-xs: 11px;
+  --size-sm: 13px;
+  --size-md: 15px;
+  --size-lg: 18px;
+  --size-xl: 24px;
+  --size-2xl: 32px;
+  --size-jumbo: clamp(2.5rem, 9vw, 5.5rem);
 }
 
 * {
@@ -29,45 +40,58 @@ html {
 body {
   background-color: var(--cloud);
   color: var(--ink);
-  font-family: 'DM Mono', monospace;
+  font-family: 'Assistant', sans-serif;
+  font-size: var(--size-md);
+  font-weight: 400;
+  line-height: 1.5;
   overflow-x: hidden;
   min-height: 100svh;
 }
 
-img, svg {
-  max-width: 100%;
+/* Comfrt-style utility classes */
+.label {
+  font-size: var(--size-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }
+
+.nav-link {
+  font-size: var(--size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.btn {
+  font-size: var(--size-sm);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.price {
+  font-size: var(--size-2xl);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+img, svg { max-width: 100%; }
 
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: var(--mist); }
 ::-webkit-scrollbar-thumb { background: var(--indigo); border-radius: 2px; }
 
-/* Grain overlay */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.05'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.2;
-}
-
-.accent-text  { color: var(--navy); }
-.accent-border {
-  border: 1px solid rgba(26, 32, 64, 0.2);
-  box-shadow: 0 0 0 1px rgba(26, 32, 64, 0.04);
-}
-
+/* Reveal animation */
 .reveal {
   opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.9s ease, transform 0.9s ease;
+  transform: translateY(30px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
 }
 .reveal.visible { opacity: 1; transform: translateY(0); }
 
-.worm-bg { position: absolute; pointer-events: none; opacity: 0.06; }
+/* Keen slider fullscreen */
+.keen-slider__slide { overflow: hidden; }
 
 /* Marquee */
 @keyframes marquee {
@@ -81,7 +105,7 @@ body::before {
 }
 .marquee-track:hover { animation-play-state: paused; }
 
-/* Sticky add-to-cart bar */
+/* Sticky cart */
 @keyframes slideUp {
   from { transform: translateY(100%); opacity: 0; }
   to   { transform: translateY(0);    opacity: 1; }
@@ -93,4 +117,29 @@ body::before {
   0%   { opacity: 0; transform: scale(0.94) translateY(10px); }
   100% { opacity: 1; transform: scale(1) translateY(0); }
 }
-.pop-in { animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+.pop-in { animation: popIn 0.3s ease forwards; }
+
+/* Progress bar for quiz */
+@keyframes progress {
+  from { width: 0; }
+}
+
+/* Fullscreen gallery */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.fade-in { animation: fadeIn 0.2s ease forwards; }
+
+/* Comparison table checkmark */
+.check { color: #22c55e; font-size: 18px; }
+.cross { color: #ef4444; font-size: 18px; }
+
+/* Autoship highlight */
+.autoship-selected {
+  border: 2px solid var(--navy);
+  background: rgba(26, 32, 64, 0.04);
+}
+.autoship-default {
+  border: 1px solid rgba(15,16,35,0.12);
+}

@@ -1,6 +1,8 @@
 'use client'
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import Image from 'next/image'
+import { useKeenSlider } from 'keen-slider/react'
+import 'keen-slider/keen-slider.min.css'
 import { createCart, type ProductVariant } from '@/lib/shopify'
 
 interface Props {
@@ -9,22 +11,47 @@ interface Props {
   currencyCode: string
 }
 
-const productImages = [
-  { src: '/product-bag.jpg', alt: 'sWrms bag — front' },
-  { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle shot' },
-  { src: '/product-worm.jpg', alt: 'sWrms gummy worm close-up' },
-  { src: '/product-lineup.jpg', alt: 'sWrms product lineup' },
-]
+// Each flavor has its own image set
+const flavorImages: Record<string, { src: string; alt: string }[]> = {
+  'Natural Berry': [
+    { src: '/product-bag.jpg', alt: 'sWrms Natural Berry — front' },
+    { src: '/product-worm.jpg', alt: 'sWrms gummy worm close-up' },
+    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
+    { src: '/product-detail.jpg', alt: 'sWrms 300mg detail' },
+  ],
+  'Watermelon': [
+    { src: '/product-lineup.jpg', alt: 'sWrms lineup' },
+    { src: '/product-worm.jpg', alt: 'sWrms gummy worm' },
+    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
+    { src: '/product-bag.jpg', alt: 'sWrms bag' },
+  ],
+}
+const defaultImages = flavorImages['Natural Berry']
+
+const SUBSCRIBE_DISCOUNT = 0.20
 
 export default function ProductSection({ variants, price, currencyCode }: Props) {
   const [selectedVariant, setSelectedVariant] = useState(variants[0] || null)
   const [qty, setQty] = useState(1)
   const [loading, setLoading] = useState(false)
   const [added, setAdded] = useState(false)
-  const [activeImg, setActiveImg] = useState(0)
+  const [purchaseType, setPurchaseType] = useState<'subscribe' | 'onetime'>('subscribe')
+  const [fullscreenImg, setFullscreenImg] = useState<string | null>(null)
+  const [currentSlide, setCurrentSlide] = useState(0)
 
-  const fmt = (amount: string) =>
-    new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode || 'USD' }).format(parseFloat(amount))
+  const images = flavorImages[selectedVariant?.title ?? ''] ?? defaultImages
+
+  const [sliderRef, instanceRef] = useKeenSlider<HTMLDivElement>({
+    initial: 0,
+    slideChanged(slider) { setCurrentSlide(slider.track.details.rel) },
+  })
+
+  const fmt = (amount: number) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode || 'USD' }).format(amount)
+
+  const basePrice = parseFloat(price)
+  const subscribePrice = basePrice * (1 - SUBSCRIBE_DISCOUNT)
+  const displayPrice = purchaseType === 'subscribe' ? subscribePrice : basePrice
 
   const handleCheckout = async () => {
     if (!selectedVariant) return
@@ -32,11 +59,8 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
     try {
       const cart = await createCart(selectedVariant.id, qty)
       window.location.href = cart.checkoutUrl
-    } catch {
-      alert('Something went wrong. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    } catch { alert('Something went wrong.') }
+    finally { setLoading(false) }
   }
 
   const handleAddToCart = async () => {
@@ -46,161 +70,258 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
       await createCart(selectedVariant.id, qty)
       setAdded(true)
       setTimeout(() => setAdded(false), 2000)
-    } catch {
-      alert('Something went wrong. Please try again.')
-    } finally {
-      setLoading(false)
-    }
+    } catch { alert('Something went wrong.') }
+    finally { setLoading(false) }
   }
 
+  const selectFlavor = useCallback((v: ProductVariant) => {
+    setSelectedVariant(v)
+    setCurrentSlide(0)
+    instanceRef.current?.moveToIdx(0)
+  }, [instanceRef])
+
   return (
-    <section id="product" className="relative py-16 sm:py-24 lg:py-32 px-5 bg-mist">
+    <section id="product" className="relative py-12 sm:py-20 px-5 bg-mist">
       <div className="max-w-6xl mx-auto">
-        <div className="grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
-          {/* Image gallery */}
-          <div className="order-2 md:order-1 space-y-3">
-            {/* Main image */}
-            <div className="aspect-square bg-cloud overflow-hidden relative">
-              <Image
-                src={productImages[activeImg].src}
-                alt={productImages[activeImg].alt}
-                fill
-                className="object-cover transition-opacity duration-300"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
+        <div className="grid md:grid-cols-[55%_45%] gap-8 lg:gap-12 items-start">
+
+          {/* ── LEFT: image gallery ── */}
+          <div className="space-y-3">
+            {/* Keen Slider */}
+            <div className="relative aspect-square overflow-hidden bg-cloud">
+              <div ref={sliderRef} className="keen-slider h-full">
+                {images.map((img, i) => (
+                  <div key={i} className="keen-slider__slide">
+                    <button
+                      onClick={() => setFullscreenImg(img.src)}
+                      className="w-full h-full block relative"
+                    >
+                      <Image
+                        src={img.src} alt={img.alt}
+                        fill className="object-cover"
+                        sizes="(max-width: 768px) 100vw, 55vw"
+                        priority={i === 0}
+                      />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              {/* Nav arrows */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={() => instanceRef.current?.prev()}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-cloud/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-cloud transition-colors z-10"
+                    aria-label="Previous"
+                  >
+                    <svg viewBox="0 0 8 14" className="w-3 h-3 fill-none stroke-ink stroke-2">
+                      <path d="M7 1L1 7l6 6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => instanceRef.current?.next()}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-cloud/80 backdrop-blur-sm flex items-center justify-center shadow-sm hover:bg-cloud transition-colors z-10"
+                    aria-label="Next"
+                  >
+                    <svg viewBox="0 0 8 14" className="w-3 h-3 fill-none stroke-ink stroke-2">
+                      <path d="M1 1l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </button>
+                </>
+              )}
+
+              {/* Fullscreen button */}
+              <button
+                onClick={() => setFullscreenImg(images[currentSlide]?.src)}
+                className="absolute bottom-3 right-3 w-8 h-8 bg-cloud/80 backdrop-blur-sm flex items-center justify-center z-10 hover:bg-cloud transition-colors"
+                aria-label="Fullscreen"
+              >
+                <svg viewBox="0 0 16 16" className="w-3.5 h-3.5 fill-none stroke-ink stroke-1.5">
+                  <path d="M1 5V1h4M11 1h4v4M15 11v4h-4M5 15H1v-4" strokeLinecap="round" />
+                </svg>
+              </button>
+
+              {/* Dots */}
+              <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5 z-10">
+                {images.map((_, i) => (
+                  <button key={i} onClick={() => instanceRef.current?.moveToIdx(i)}
+                    className={`w-1.5 h-1.5 rounded-full transition-all ${currentSlide === i ? 'bg-navy w-4' : 'bg-navy/30'}`}
+                  />
+                ))}
+              </div>
             </div>
-            {/* Thumbnails */}
+
+            {/* Thumbnail strip */}
             <div className="grid grid-cols-4 gap-2">
-              {productImages.map((img, i) => (
+              {images.map((img, i) => (
                 <button
                   key={i}
-                  onClick={() => setActiveImg(i)}
-                  className={`aspect-square overflow-hidden border-2 transition-all duration-200 ${
-                    activeImg === i ? 'border-navy' : 'border-transparent opacity-60 hover:opacity-100'
+                  onClick={() => { instanceRef.current?.moveToIdx(i); setCurrentSlide(i) }}
+                  className={`aspect-square overflow-hidden border-2 transition-all ${
+                    currentSlide === i ? 'border-navy' : 'border-transparent opacity-50 hover:opacity-80'
                   }`}
                 >
-                  <Image
-                    src={img.src}
-                    alt={img.alt}
-                    width={120}
-                    height={120}
-                    className="w-full h-full object-cover"
-                  />
+                  <Image src={img.src} alt={img.alt} width={100} height={100} className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Details */}
-          <div className="order-1 md:order-2">
+          {/* ── RIGHT: purchase UI ── */}
+          <div className="md:sticky md:top-28 space-y-5">
             {/* Rating */}
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2">
               <div className="flex gap-0.5">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} viewBox="0 0 12 12" className="w-3 h-3 fill-indigo">
+                  <svg key={i} viewBox="0 0 12 12" className="w-3.5 h-3.5 fill-indigo">
                     <path d="M6 0l1.5 4h4l-3.3 2.4 1.3 4L6 8 2.5 10.4l1.3-4L0 4h4z" />
                   </svg>
                 ))}
               </div>
-              <span className="font-body text-xs text-stone tracking-wider">4.9 · 1,247 reviews</span>
+              <a href="#reviews" className="text-sm text-stone hover:text-navy">4.9 · 1,247 reviews</a>
             </div>
 
-            <div className="font-body text-[10px] sm:text-xs tracking-[0.3em] text-indigo uppercase mb-3">
-              sWrms. Magnesium Glycinate
+            {/* Title */}
+            <div>
+              <div className="label text-indigo mb-1">sWrms. Magnesium Glycinate</div>
+              <h2 className="text-2xl font-bold text-ink leading-tight" style={{ letterSpacing: '-0.02em' }}>
+                Gummy Worms for Deep Sleep
+              </h2>
             </div>
 
-            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-ink font-light leading-tight mb-4">
-              Gummy Worms<br />
-              <span className="italic text-navy">for Deep Sleep</span>
-            </h2>
-
-            <p className="font-body text-xs sm:text-sm text-stone leading-relaxed mb-6">
-              300mg magnesium glycinate per serving. Calming mixed berry flavor. 60 gummies. No melatonin, no morning grogginess — just the sleep your body has been asking for.
-            </p>
-
-            {/* Price */}
-            <div className="flex items-baseline gap-3 mb-1">
-              <span className="font-display text-3xl sm:text-4xl text-navy">{fmt(price)}</span>
-              <span className="font-body text-xs text-stone line-through">{fmt(String(parseFloat(price) * 1.25))}</span>
-              <span className="font-body text-[10px] bg-indigo/10 text-indigo px-2 py-0.5 tracking-wider">SAVE 20%</span>
-            </div>
-            <div className="font-body text-[10px] text-stone tracking-wider mb-6">
-              or {fmt(String(parseFloat(price) * 0.85))}/mo with{' '}
-              <span className="text-indigo">Subscribe & Save</span>
-            </div>
-
-            {/* Variants */}
-            {variants.length > 1 && (
-              <div className="mb-5">
-                <div className="font-body text-[10px] tracking-widest text-stone uppercase mb-2">
-                  Flavor: <span className="text-ink">{selectedVariant?.title}</span>
+            {/* ── PURCHASE TYPE (trycreate style) ── */}
+            <div className="space-y-2">
+              {/* Subscribe & Save — default/highlighted */}
+              <button
+                onClick={() => setPurchaseType('subscribe')}
+                className={`w-full flex items-center justify-between p-4 rounded transition-all ${
+                  purchaseType === 'subscribe' ? 'autoship-selected' : 'autoship-default bg-cloud'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                    purchaseType === 'subscribe' ? 'border-navy' : 'border-stone/40'
+                  }`}>
+                    {purchaseType === 'subscribe' && <div className="w-2 h-2 rounded-full bg-navy" />}
+                  </div>
+                  <div className="text-left">
+                    <div className="label text-navy">Subscribe &amp; Save 20%</div>
+                    <div className="text-xs text-stone mt-0.5">Delivered monthly · Cancel anytime</div>
+                  </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  {variants.map((v) => (
+                <div className="text-right">
+                  <div className="text-xl font-bold text-navy" style={{ letterSpacing: '-0.02em' }}>{fmt(subscribePrice)}</div>
+                  <div className="label text-teal">SAVE 20%</div>
+                </div>
+              </button>
+
+              {/* One-time */}
+              <button
+                onClick={() => setPurchaseType('onetime')}
+                className={`w-full flex items-center justify-between p-4 rounded transition-all ${
+                  purchaseType === 'onetime' ? 'autoship-selected' : 'autoship-default bg-cloud'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                    purchaseType === 'onetime' ? 'border-navy' : 'border-stone/40'
+                  }`}>
+                    {purchaseType === 'onetime' && <div className="w-2 h-2 rounded-full bg-navy" />}
+                  </div>
+                  <div className="label text-stone">One-Time Purchase</div>
+                </div>
+                <div className="text-xl font-bold text-stone" style={{ letterSpacing: '-0.02em' }}>{fmt(basePrice)}</div>
+              </button>
+            </div>
+
+            {/* Flavor — with image previews */}
+            <div>
+              <div className="label text-stone mb-2">
+                FLAVOR: <span className="text-ink">{selectedVariant?.title}</span>
+              </div>
+              <div className="flex gap-2">
+                {variants.map((v) => {
+                  const flavorImgs = flavorImages[v.title] ?? defaultImages
+                  return (
                     <button
                       key={v.id}
-                      onClick={() => setSelectedVariant(v)}
+                      onClick={() => selectFlavor(v)}
                       disabled={!v.availableForSale}
-                      className={`font-body text-[10px] sm:text-xs tracking-wider px-3 sm:px-4 py-2 border transition-all ${
-                        selectedVariant?.id === v.id
-                          ? 'border-navy text-navy bg-navy/8'
-                          : 'border-ink/15 text-stone hover:border-navy/40'
-                      } ${!v.availableForSale ? 'opacity-40 cursor-not-allowed' : ''}`}
+                      className={`relative flex-1 aspect-[4/3] overflow-hidden border-2 transition-all ${
+                        selectedVariant?.id === v.id ? 'border-navy' : 'border-transparent opacity-60 hover:opacity-90'
+                      }`}
                     >
-                      {v.title}
+                      <Image src={flavorImgs[0].src} alt={v.title} fill className="object-cover" sizes="150px" />
+                      <div className="absolute inset-0 bg-navy/30 flex items-end p-2">
+                        <span className="label text-cloud text-[9px]">{v.title}</span>
+                      </div>
                     </button>
-                  ))}
-                </div>
+                  )
+                })}
               </div>
-            )}
+            </div>
 
             {/* Qty */}
-            <div className="mb-6">
-              <div className="font-body text-[10px] tracking-widest text-stone uppercase mb-2">Quantity</div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center border border-ink/15">
-                  <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 text-ink hover:text-navy transition-colors text-lg">−</button>
-                  <span className="w-10 text-center font-body text-sm">{qty}</span>
-                  <button onClick={() => setQty(qty + 1)} className="w-10 h-10 text-ink hover:text-navy transition-colors text-lg">+</button>
-                </div>
-                {qty > 1 && <span className="font-body text-xs text-stone">{fmt(String(parseFloat(price) * qty))} total</span>}
+            <div className="flex items-center gap-4">
+              <div className="label text-stone">QTY</div>
+              <div className="flex items-center border border-ink/15">
+                <button onClick={() => setQty(Math.max(1, qty - 1))} className="w-10 h-10 text-xl text-ink hover:text-navy transition-colors">−</button>
+                <span className="w-10 text-center font-bold text-sm">{qty}</span>
+                <button onClick={() => setQty(qty + 1)} className="w-10 h-10 text-xl text-ink hover:text-navy transition-colors">+</button>
               </div>
+              {qty > 1 && <span className="text-sm text-stone">{fmt(displayPrice * qty)}</span>}
+            </div>
+
+            {/* Scarcity */}
+            <div className="flex items-center gap-2 text-sm">
+              <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse shrink-0" />
+              <span className="text-stone"><strong className="text-ink">47 units</strong> left · Ships in 24h</span>
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col gap-3">
-              <button
-                onClick={handleCheckout}
-                disabled={loading || !selectedVariant?.availableForSale}
-                className="w-full bg-navy text-cloud font-body text-xs sm:text-sm tracking-[0.2em] uppercase py-4 hover:bg-indigo transition-all duration-300 disabled:opacity-50 min-h-[52px] shadow-sm hover:shadow-md"
-              >
-                {loading ? 'Loading...' : 'Buy Now — Checkout'}
+            <div className="space-y-2.5">
+              <button onClick={handleCheckout} disabled={loading}
+                className="btn w-full bg-navy text-cloud py-4 hover:bg-indigo transition-colors disabled:opacity-50 min-h-[52px]">
+                {loading ? 'Loading...' : `Buy Now — ${fmt(displayPrice * qty)}`}
               </button>
-              <button
-                onClick={handleAddToCart}
-                disabled={loading || !selectedVariant?.availableForSale}
-                className="w-full border border-navy/30 text-navy font-body text-xs sm:text-sm tracking-[0.2em] uppercase py-4 hover:bg-navy/5 transition-all duration-300 disabled:opacity-50 min-h-[52px]"
-              >
+              <button onClick={handleAddToCart} disabled={loading}
+                className="btn w-full border-2 border-navy text-navy py-4 hover:bg-navy hover:text-cloud transition-all disabled:opacity-50 min-h-[52px]">
                 {added ? '✓ Added to Cart' : 'Add to Cart'}
               </button>
             </div>
 
-            {/* Trust signals */}
-            <div className="mt-6 pt-6 border-t border-ink/8 grid grid-cols-3 gap-3 text-center">
+            {/* Trust */}
+            <div className="grid grid-cols-3 gap-2 pt-4 border-t border-ink/8 text-center">
               {[
-                { label: 'Free Shipping', sub: 'Orders $50+' },
-                { label: '30-Day Returns', sub: 'No questions' },
-                { label: 'Lab Tested', sub: '3rd party' },
-              ].map((t) => (
-                <div key={t.label}>
-                  <div className="font-body text-[9px] sm:text-[10px] tracking-wider text-navy uppercase leading-tight">{t.label}</div>
-                  <div className="font-body text-[9px] text-stone mt-0.5">{t.sub}</div>
+                { icon: '🚚', t: 'Free Shipping', s: 'Orders $50+' },
+                { icon: '↩', t: '30-Day Returns', s: 'No questions' },
+                { icon: '🔬', t: 'Lab Tested', s: '3rd party' },
+              ].map((item) => (
+                <div key={item.t}>
+                  <div className="text-lg mb-0.5">{item.icon}</div>
+                  <div className="label text-navy leading-tight">{item.t}</div>
+                  <div className="text-xs text-stone">{item.s}</div>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </div>
+
+      {/* Fullscreen modal */}
+      {fullscreenImg && (
+        <div
+          className="fixed inset-0 z-[90] bg-ink/90 flex items-center justify-center p-4 fade-in"
+          onClick={() => setFullscreenImg(null)}
+        >
+          <button onClick={() => setFullscreenImg(null)}
+            className="absolute top-4 right-4 text-cloud/70 hover:text-cloud text-3xl font-light z-10">×</button>
+          <div className="relative w-full max-w-2xl aspect-square" onClick={e => e.stopPropagation()}>
+            <Image src={fullscreenImg} alt="Product" fill className="object-contain" sizes="800px" />
+          </div>
+        </div>
+      )}
     </section>
   )
 }

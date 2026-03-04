@@ -19,23 +19,32 @@ const config: Config = {
         stone: '#6b6988',
       },
       fontFamily: {
-        display: ['Cormorant Garamond', 'serif'],
-        body: ['DM Mono', 'monospace'],
+        sans: ['Assistant', 'sans-serif'],
+      },
+      fontSize: {
+        xs: ['11px', { lineHeight: '1.4', letterSpacing: '0.05em' }],
+        sm: ['13px', { lineHeight: '1.5' }],
+        base: ['15px', { lineHeight: '1.6' }],
+        lg: ['18px', { lineHeight: '1.5' }],
+        xl: ['22px', { lineHeight: '1.3' }],
+        '2xl': ['28px', { lineHeight: '1.2' }],
+        '3xl': ['36px', { lineHeight: '1.1' }],
+        '4xl': ['48px', { lineHeight: '1.05' }],
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
-        'float-slow': 'float 9s ease-in-out infinite',
-        'fadeUp': 'fadeUp 0.8s ease forwards',
       },
       keyframes: {
         float: {
-          '0%, 100%': { transform: 'translateY(0px) rotate(-1deg)' },
-          '50%': { transform: 'translateY(-18px) rotate(1deg)' },
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-16px)' },
         },
-        fadeUp: {
-          '0%': { opacity: '0', transform: 'translateY(30px)' },
-          '100%': { opacity: '1', transform: 'translateY(0)' },
-        },
+      },
+      letterSpacing: {
+        'label': '0.1em',
+        'nav': '0.08em',
+        'btn': '0.06em',
+        'price': '-0.02em',
       },
     },
   },
