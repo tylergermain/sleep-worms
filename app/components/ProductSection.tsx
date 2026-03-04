@@ -14,16 +14,16 @@ interface Props {
 // Each flavor has its own image set
 const flavorImages: Record<string, { src: string; alt: string }[]> = {
   'Natural Berry': [
-    { src: '/product-bag.jpg', alt: 'sWrms Natural Berry — front' },
-    { src: '/product-worm.jpg', alt: 'sWrms gummy worm close-up' },
-    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
-    { src: '/product-detail.jpg', alt: 'sWrms 300mg detail' },
+    { src: '/flavor-berry.png', alt: 'sWrms Natural Berry gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'sWrms Natural Berry — bag front' },
+    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle — bedtime ritual' },
   ],
   'Watermelon': [
-    { src: '/product-lineup.jpg', alt: 'sWrms lineup' },
-    { src: '/product-worm.jpg', alt: 'sWrms gummy worm' },
-    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
+    { src: '/flavor-watermelon.png', alt: 'sWrms Watermelon gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
     { src: '/product-bag.jpg', alt: 'sWrms bag' },
+    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
   ],
 }
 const defaultImages = flavorImages['Natural Berry']

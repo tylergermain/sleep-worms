@@ -3,12 +3,21 @@ import { useState } from 'react'
 import Image from 'next/image'
 import { createCart, type ProductVariant } from '@/lib/shopify'
 
-const productImages = [
-  { src: '/product-bag.jpg', alt: 'sWrms bag — front' },
-  { src: '/product-worm.jpg', alt: 'sWrms gummy worm' },
-  { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
-  { src: '/product-lineup.jpg', alt: 'sWrms lineup' },
-]
+const flavorImages: Record<string, { src: string; alt: string }[]> = {
+  'Natural Berry': [
+    { src: '/flavor-berry.png', alt: 'sWrms Natural Berry gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'sWrms Natural Berry — bag front' },
+    { src: '/product-lifestyle.jpg', alt: 'sWrms bedtime ritual' },
+  ],
+  'Watermelon': [
+    { src: '/flavor-watermelon.png', alt: 'sWrms Watermelon gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'sWrms bag' },
+    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
+  ],
+}
+const defaultImages = flavorImages['Natural Berry']
 
 interface Props {
   variants: ProductVariant[]
@@ -44,6 +53,13 @@ export default function ProductDetail({ variants, price, currencyCode }: Props) 
   const [activeTab, setActiveTab] = useState<Tab>('Description')
   const [openFaq, setOpenFaq] = useState<number | null>(null)
   const [activeImg, setActiveImg] = useState(0)
+
+  const productImages = flavorImages[selectedVariant?.title ?? ''] ?? defaultImages
+
+  const selectVariant = (v: typeof selectedVariant) => {
+    setSelectedVariant(v)
+    setActiveImg(0)
+  }
 
   const fmt = (amount: string) =>
     new Intl.NumberFormat('en-US', { style: 'currency', currency: currencyCode || 'USD' }).format(parseFloat(amount))
@@ -121,21 +137,27 @@ export default function ProductDetail({ variants, price, currencyCode }: Props) 
               ))}
             </div>
 
-            {/* Flavor swatches */}
+            {/* Flavor swatches — image preview */}
             <div className="flex gap-3">
-              {variants.map((v) => (
-                <button
-                  key={v.id}
-                  onClick={() => setSelectedVariant(v)}
-                  className={`flex-1 border py-3 flex items-center justify-center text-center transition-all duration-200 font-body text-xs tracking-wider ${
-                    selectedVariant?.id === v.id
-                      ? 'border-navy bg-navy/8'
-                      : 'border-ink/10 bg-mist hover:border-navy/30'
-                  }`}
-                >
-                  <span className={selectedVariant?.id === v.id ? 'text-navy' : 'text-stone'}>{v.title}</span>
-                </button>
-              ))}
+              {variants.map((v) => {
+                const imgs = flavorImages[v.title] ?? defaultImages
+                return (
+                  <button
+                    key={v.id}
+                    onClick={() => selectVariant(v)}
+                    className={`relative flex-1 aspect-[4/3] overflow-hidden border-2 transition-all duration-200 ${
+                      selectedVariant?.id === v.id
+                        ? 'border-navy'
+                        : 'border-transparent opacity-55 hover:opacity-90'
+                    }`}
+                  >
+                    <Image src={imgs[0].src} alt={v.title} fill className="object-cover" sizes="200px" />
+                    <div className="absolute inset-0 bg-navy/30 flex items-end p-2">
+                      <span className="font-body text-[9px] tracking-widest uppercase text-cloud">{v.title}</span>
+                    </div>
+                  </button>
+                )
+              })}
             </div>
           </div>
 
@@ -182,7 +204,7 @@ export default function ProductDetail({ variants, price, currencyCode }: Props) 
                 {variants.map((v) => (
                   <button
                     key={v.id}
-                    onClick={() => setSelectedVariant(v)}
+                    onClick={() => selectVariant(v)}
                     disabled={!v.availableForSale}
                     className={`font-body text-xs tracking-wider px-4 py-2 border transition-all ${
                       selectedVariant?.id === v.id
