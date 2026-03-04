@@ -42,7 +42,7 @@ export default function Ritual() {
           </div>
           <div className="reveal relative">
             <div className="aspect-square overflow-hidden relative">
-              <Image src="/product-lifestyle.jpg" alt="sWrms nightly ritual" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
+              <Image src="/product-lifestyle.jpg" alt="wrms nightly ritual" fill className="object-cover" sizes="(max-width: 768px) 100vw, 50vw" />
             </div>
             <div className="absolute -bottom-3 -left-3 sm:-bottom-5 sm:-left-5 bg-cloud border border-ink/8 p-4 shadow-lg">
               <div className="label text-indigo mb-0.5">Best taken</div>

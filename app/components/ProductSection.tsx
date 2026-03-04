@@ -14,16 +14,16 @@ interface Props {
 // Each flavor has its own image set
 const flavorImages: Record<string, { src: string; alt: string }[]> = {
   'Natural Berry': [
-    { src: '/flavor-berry.png', alt: 'sWrms Natural Berry gummy worm' },
-    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
-    { src: '/product-bag.jpg', alt: 'sWrms Natural Berry — bag front' },
-    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle — bedtime ritual' },
+    { src: '/flavor-berry.png', alt: 'wrms Natural Berry gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'wrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'wrms Natural Berry — bag front' },
+    { src: '/product-lifestyle.jpg', alt: 'wrms lifestyle — bedtime ritual' },
   ],
   'Watermelon': [
-    { src: '/flavor-watermelon.png', alt: 'sWrms Watermelon gummy worm' },
-    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
-    { src: '/product-bag.jpg', alt: 'sWrms bag' },
-    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
+    { src: '/flavor-watermelon.png', alt: 'wrms Watermelon gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'wrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'wrms bag' },
+    { src: '/product-lifestyle.jpg', alt: 'wrms lifestyle' },
   ],
 }
 const defaultImages = flavorImages['Natural Berry']
@@ -91,14 +91,14 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
             <div className="relative aspect-square overflow-hidden bg-cloud">
               <div ref={sliderRef} className="keen-slider h-full">
                 {images.map((img, i) => (
-                  <div key={i} className="keen-slider__slide">
+                  <div key={i} className="keen-slider__slide relative h-full overflow-hidden">
                     <button
                       onClick={() => setFullscreenImg(img.src)}
-                      className="w-full h-full block relative"
+                      className="absolute inset-0 w-full h-full block"
                     >
                       <Image
                         src={img.src} alt={img.alt}
-                        fill className="object-cover"
+                        fill className="object-contain bg-cloud"
                         sizes="(max-width: 768px) 100vw, 55vw"
                         priority={i === 0}
                       />
@@ -184,7 +184,7 @@ export default function ProductSection({ variants, price, currencyCode }: Props)
 
             {/* Title */}
             <div>
-              <div className="label text-indigo mb-1">sWrms. Magnesium Glycinate</div>
+              <div className="label text-indigo mb-1">wrms. Magnesium Glycinate</div>
               <h2 className="text-2xl font-bold text-ink leading-tight" style={{ letterSpacing: '-0.02em' }}>
                 Gummy Worms for Deep Sleep
               </h2>

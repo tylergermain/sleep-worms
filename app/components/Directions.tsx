@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 const steps = [
   { num: 1, time: '8:00 PM', title: 'Dim everything', body: 'An hour before bed, lower the lights. Switch your phone to night mode. Give your brain the signal that the day is done.' },
-  { num: 2, time: '9:30 PM', title: 'Take two worms', body: 'Eat 2 sWrms (300mg magnesium glycinate). Chew slowly. Mixed berry hits different at night.' },
+  { num: 2, time: '9:30 PM', title: 'Take two worms', body: 'Eat 2 wrms (300mg magnesium glycinate). Chew slowly. Mixed berry hits different at night.' },
   { num: 3, time: '9:45 PM', title: 'Wind down', body: 'Read. Stretch. Breathe. The magnesium is activating your parasympathetic nervous system as you do this.' },
   { num: 4, time: '10:00 PM', title: 'Sleep', body: 'Your GABA receptors are firing. Your cortisol is dropping. Your muscles are softening. Close your eyes.' },
 ]
@@ -25,7 +25,7 @@ export default function Directions() {
         <div className="text-center mb-12 reveal">
           <div className="label text-indigo mb-3">Directions</div>
           <h2 className="text-3xl sm:text-4xl font-bold text-ink" style={{ letterSpacing: '-0.02em' }}>
-            How to use sWrms
+            How to use wrms
           </h2>
           <p className="text-base text-stone mt-3 max-w-md mx-auto">
             Simple. Just 2 gummies (1 serving) 30-60 minutes before bed.

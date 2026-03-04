@@ -32,7 +32,7 @@ export default function ComparisonTable() {
         <div className="text-center mb-10 reveal">
           <div className="label text-indigo mb-3">How We Stack Up</div>
           <h2 className="text-3xl sm:text-4xl font-bold text-ink" style={{ letterSpacing: '-0.02em' }}>
-            sWrms vs. the alternatives
+            wrms vs. the alternatives
           </h2>
         </div>
 
@@ -42,7 +42,7 @@ export default function ComparisonTable() {
               <tr className="bg-navy text-cloud">
                 <th className="text-left p-4 text-sm font-bold" style={{ letterSpacing: '-0.01em', width: '40%' }}>Feature</th>
                 <th className="p-4 text-center">
-                  <div className="text-sm font-bold">sWrms.</div>
+                  <div className="text-sm font-bold">wrms.</div>
                   <div className="text-xs opacity-70">Mag. Glycinate</div>
                 </th>
                 <th className="p-4 text-center">
@@ -72,7 +72,7 @@ export default function ComparisonTable() {
 
         <div className="mt-8 text-center reveal">
           <a href="#product" className="btn bg-navy text-cloud px-10 py-4 hover:bg-indigo transition-colors inline-block">
-            Choose sWrms
+            Choose wrms
           </a>
         </div>
       </div>

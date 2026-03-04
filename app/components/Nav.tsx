@@ -30,7 +30,7 @@ export default function Nav() {
       <div className="max-w-6xl mx-auto px-5 py-4 flex items-center justify-between">
         {/* Logo — comfrt style: bold, clean, tight */}
         <a href="#" className="font-sans font-800 text-xl tracking-tight text-navy shrink-0 leading-none" style={{ fontWeight: 800 }}>
-          sWrms.
+          wrms.
         </a>
 
         {/* Desktop links — comfrt: uppercase, tight, bold */}
@@ -74,7 +74,7 @@ export default function Nav() {
           ))}
           <a href="#product" onClick={() => setOpen(false)}
             className="btn bg-navy text-cloud text-center py-3 mt-4 hover:bg-indigo transition-colors">
-            Shop sWrms
+            Shop wrms
           </a>
         </div>
       </div>

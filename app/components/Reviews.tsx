@@ -2,7 +2,7 @@
 import { useEffect, useRef } from 'react'
 
 const reviews = [
-  { quote: "I've tried everything — melatonin, magnesium citrate, sleep gummies that tasted like chalk. sWrms hit different. Week 2, I woke up before my alarm for the first time in years.", author: 'Maya R.', role: 'ER Nurse, Chicago', stars: 5 },
+  { quote: "I've tried everything — melatonin, magnesium citrate, sleep gummies that tasted like chalk. wrms hit different. Week 2, I woke up before my alarm for the first time in years.", author: 'Maya R.', role: 'ER Nurse, Chicago', stars: 5 },
   { quote: "The gummy worm format is kinda genius — I actually look forward to taking my magnesium now. Sleep quality is noticeably better. Deep, dark, no 3am wake-ups.", author: 'James T.', role: 'Software Eng, Austin', stars: 5 },
   { quote: "No grogginess the next morning. That was my main issue with everything else I tried. These just work quietly.", author: 'Priya K.', role: 'Product Manager, NYC', stars: 5 },
   { quote: "Started taking two before reading in bed. Out within 20 minutes consistently now. My wife noticed before I did.", author: 'Derek M.', role: 'High school teacher, Oregon', stars: 5 },
@@ -51,7 +51,7 @@ export default function Reviews() {
         <div className="text-center mt-12 reveal">
           <p className="text-base text-stone mb-5">Join 12,000+ better sleepers.</p>
           <a href="#product" className="btn bg-navy text-cloud px-10 py-4 hover:bg-indigo transition-colors inline-block">
-            Shop sWrms
+            Shop wrms
           </a>
         </div>
       </div>

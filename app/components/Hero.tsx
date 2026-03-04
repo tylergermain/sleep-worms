@@ -50,7 +50,7 @@ export default function Hero() {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
               <a href="#product"
                 className="btn bg-navy text-cloud px-8 py-4 hover:bg-indigo transition-colors duration-200 text-center shadow-sm">
-                Shop sWrms — $39
+                Shop wrms — $39
               </a>
               <a href="#science"
                 className="btn text-stone border border-ink/15 px-8 py-4 hover:border-navy hover:text-navy transition-colors duration-200 text-center">
@@ -65,7 +65,7 @@ export default function Hero() {
             <div className="relative animate-float w-full max-w-[280px] sm:max-w-[380px] md:max-w-[440px]">
               <Image
                 src="/product-bag.jpg"
-                alt="sWrms Magnesium Glycinate Gummy Worms"
+                alt="wrms Magnesium Glycinate Gummy Worms"
                 width={440} height={520}
                 className="w-full h-auto object-contain drop-shadow-2xl"
                 priority

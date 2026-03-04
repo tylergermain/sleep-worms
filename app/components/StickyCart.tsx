@@ -40,10 +40,10 @@ export default function StickyCart({ variants, price, currencyCode }: Props) {
       <div className="max-w-6xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3 min-w-0">
           <div className="w-10 h-10 shrink-0 overflow-hidden relative">
-            <Image src="/product-bag.jpg" alt="sWrms" fill className="object-cover" sizes="40px" />
+            <Image src="/product-bag.jpg" alt="wrms" fill className="object-cover" sizes="40px" />
           </div>
           <div className="min-w-0">
-            <div className="text-xs font-bold text-ink uppercase tracking-wide truncate">sWrms. · 60 Gummies</div>
+            <div className="text-xs font-bold text-ink uppercase tracking-wide truncate">wrms. · 60 Gummies</div>
             <div className="text-sm font-bold text-navy" style={{ letterSpacing: '-0.01em' }}>{fmt(price)}</div>
           </div>
         </div>

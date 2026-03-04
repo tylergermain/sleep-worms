@@ -128,7 +128,7 @@ export default function MysteryPopup() {
               <div className="text-center mb-6">
                 <div className="text-4xl mb-3">🎉</div>
                 <h3 className="text-xl font-bold text-ink mb-2" style={{ letterSpacing: '-0.01em' }}>
-                  sWrms is your match
+                  wrms is your match
                 </h3>
                 <p className="text-sm text-stone leading-relaxed">
                   Based on your answers, magnesium glycinate is exactly what your sleep needs.
@@ -155,7 +155,7 @@ export default function MysteryPopup() {
 
               <a href="#product" onClick={dismiss}
                 className="btn w-full bg-navy text-cloud py-4 hover:bg-indigo transition-colors block text-center">
-                Shop sWrms Now →
+                Shop wrms Now →
               </a>
               <p className="text-xs text-stone/50 text-center mt-3">One use per customer · Expires in 48 hours</p>
             </>

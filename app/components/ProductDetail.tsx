@@ -5,16 +5,16 @@ import { createCart, type ProductVariant } from '@/lib/shopify'
 
 const flavorImages: Record<string, { src: string; alt: string }[]> = {
   'Natural Berry': [
-    { src: '/flavor-berry.png', alt: 'sWrms Natural Berry gummy worm' },
-    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
-    { src: '/product-bag.jpg', alt: 'sWrms Natural Berry — bag front' },
-    { src: '/product-lifestyle.jpg', alt: 'sWrms bedtime ritual' },
+    { src: '/flavor-berry.png', alt: 'wrms Natural Berry gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'wrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'wrms Natural Berry — bag front' },
+    { src: '/product-lifestyle.jpg', alt: 'wrms bedtime ritual' },
   ],
   'Watermelon': [
-    { src: '/flavor-watermelon.png', alt: 'sWrms Watermelon gummy worm' },
-    { src: '/product-closeup.jpg', alt: 'sWrms gummy worm held up close' },
-    { src: '/product-bag.jpg', alt: 'sWrms bag' },
-    { src: '/product-lifestyle.jpg', alt: 'sWrms lifestyle' },
+    { src: '/flavor-watermelon.png', alt: 'wrms Watermelon gummy worm' },
+    { src: '/product-closeup.jpg', alt: 'wrms gummy worm held up close' },
+    { src: '/product-bag.jpg', alt: 'wrms bag' },
+    { src: '/product-lifestyle.jpg', alt: 'wrms lifestyle' },
   ],
 }
 const defaultImages = flavorImages['Natural Berry']
@@ -293,7 +293,7 @@ export default function ProductDetail({ variants, price, currencyCode }: Props) 
         <div className="mt-8 max-w-2xl">
           {activeTab === 'Description' && (
             <div className="space-y-4 font-body text-xs sm:text-sm text-stone leading-relaxed">
-              <p>sWrms are a magnesium glycinate supplement in gummy worm form. Simple concept, serious formulation. Each worm contains 200mg of elemental magnesium in the glycinate chelate form — the most bioavailable, gentle-on-the-gut form of magnesium available.</p>
+              <p>wrms are a magnesium glycinate supplement in gummy worm form. Simple concept, serious formulation. Each worm contains 200mg of elemental magnesium in the glycinate chelate form — the most bioavailable, gentle-on-the-gut form of magnesium available.</p>
               <p>Magnesium is the fourth most abundant mineral in the human body and participates in over 300 enzymatic reactions. When it comes to sleep, it acts as a natural calcium channel blocker, quieting neural excitability and activating the parasympathetic nervous system.</p>
               <p>We chose glycinate because the glycine amino acid it&apos;s chelated to has independent sleep-promoting effects via NMDA receptor modulation and core body temperature reduction — your brain&apos;s natural signal to enter sleep.</p>
               <p>No melatonin. No 5-HTP. No valerian. Just the mineral your body already needs, in the form it can actually use.</p>
