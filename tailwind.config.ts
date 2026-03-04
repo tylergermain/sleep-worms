@@ -9,13 +9,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        void: '#04060a',
-        midnight: '#0a0d14',
-        deep: '#111827',
-        glow: '#a8ff5a',
-        'glow-dim': '#6fcc2a',
-        lunar: '#f0ede8',
-        mist: '#8a8fa8',
+        cream: '#f9f5ef',
+        parchment: '#f0ebe0',
+        sand: '#e5ddd0',
+        forest: '#2e5c3e',
+        fern: '#4a8c60',
+        ink: '#1a1612',
+        stone: '#6b5f52',
       },
       fontFamily: {
         display: ['Cormorant Garamond', 'serif'],
@@ -24,8 +24,7 @@ const config: Config = {
       animation: {
         'float': 'float 6s ease-in-out infinite',
         'float-slow': 'float 9s ease-in-out infinite',
-        'pulse-glow': 'pulseGlow 3s ease-in-out infinite',
-        'worm-crawl': 'wormCrawl 20s linear infinite',
+        'pulse-soft': 'pulseSoft 3s ease-in-out infinite',
         'fadeUp': 'fadeUp 0.8s ease forwards',
       },
       keyframes: {
@@ -33,14 +32,9 @@ const config: Config = {
           '0%, 100%': { transform: 'translateY(0px) rotate(-2deg)' },
           '50%': { transform: 'translateY(-20px) rotate(2deg)' },
         },
-        pulseGlow: {
-          '0%, 100%': { boxShadow: '0 0 20px rgba(168, 255, 90, 0.3)' },
-          '50%': { boxShadow: '0 0 60px rgba(168, 255, 90, 0.7), 0 0 120px rgba(168, 255, 90, 0.3)' },
-        },
-        wormCrawl: {
-          '0%': { transform: 'translateX(-10%) rotate(0deg)' },
-          '50%': { transform: 'translateX(10%) rotate(180deg)' },
-          '100%': { transform: 'translateX(-10%) rotate(360deg)' },
+        pulseSoft: {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(46, 92, 62, 0.15)' },
+          '50%': { boxShadow: '0 0 0 12px rgba(46, 92, 62, 0)' },
         },
         fadeUp: {
           '0%': { opacity: '0', transform: 'translateY(30px)' },

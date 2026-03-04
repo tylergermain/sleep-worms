@@ -51,37 +51,35 @@ export default function Benefits() {
   }, [])
 
   return (
-    <section id="benefits" ref={sectionRef} className="relative py-16 sm:py-24 lg:py-32 px-5 overflow-hidden">
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(168,255,90,0.03)_0%,transparent_70%)]" />
+    <section id="benefits" ref={sectionRef} className="relative py-16 sm:py-24 lg:py-32 px-5 bg-cream overflow-hidden">
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_50%,rgba(46,92,62,0.04)_0%,transparent_70%)]" />
 
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-12 sm:mb-20 reveal">
-          <div className="font-body text-[10px] sm:text-xs tracking-[0.3em] text-glow/60 uppercase mb-4">
+          <div className="font-body text-[10px] sm:text-xs tracking-[0.3em] text-forest/70 uppercase mb-4">
             Why it works
           </div>
-          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-lunar font-light">
+          <h2 className="font-display text-4xl sm:text-5xl md:text-7xl text-ink font-light">
             Not magic.
             <br />
-            <span className="italic text-glow">Biochemistry.</span>
+            <span className="italic text-forest">Biochemistry.</span>
           </h2>
         </div>
 
-        {/* Benefits grid — 1 col mobile, 2 col tablet, 3 col desktop */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-white/5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-ink/8">
           {benefits.map((b, i) => (
             <div
               key={b.title}
-              className="reveal bg-void p-6 sm:p-8 hover:bg-midnight transition-colors duration-300 group"
+              className="reveal bg-cream p-6 sm:p-8 hover:bg-parchment transition-colors duration-300 group"
               style={{ transitionDelay: `${i * 80}ms` }}
             >
-              <div className="font-display text-2xl sm:text-3xl text-glow/40 group-hover:text-glow/80 transition-colors duration-300 mb-4 sm:mb-6">
+              <div className="font-display text-2xl sm:text-3xl text-forest/30 group-hover:text-forest/70 transition-colors duration-300 mb-4 sm:mb-6">
                 {b.icon}
               </div>
-              <h3 className="font-body text-xs sm:text-sm tracking-wider text-lunar uppercase mb-2 sm:mb-3">
+              <h3 className="font-body text-xs sm:text-sm tracking-wider text-ink uppercase mb-2 sm:mb-3">
                 {b.title}
               </h3>
-              <p className="font-body text-xs text-mist leading-relaxed">
+              <p className="font-body text-xs text-stone leading-relaxed">
                 {b.body}
               </p>
             </div>
